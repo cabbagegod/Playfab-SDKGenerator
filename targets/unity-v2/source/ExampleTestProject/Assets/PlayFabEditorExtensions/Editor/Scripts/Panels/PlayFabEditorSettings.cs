@@ -69,7 +69,16 @@ namespace PlayFab.PfEditor
 
                 if (changedFlags)
                 {
+#if UNITY_2021_2_OR_NEWER
+                    BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
+                    BuildTargetGroup targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
+                    NamedBuildTarget namedBuildTarget = NamedBuildTarget.FromBuildTargetGroup(targetGroup);
+
+                    PlayerSettings.SetScriptingDefineSymbols(namedBuildTarget, curDefines);
+#else
                     PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, curDefines);
+#endif
+                    
                     Debug.Log("Updating Defines: " + curDefines);
                     AssetDatabase.Refresh();
                 }
